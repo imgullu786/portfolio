@@ -13,4 +13,234 @@ datasource db {
   provider = "postgresql"
 }
 
+// ============================================
+// AUTHENTICATION (NextAuth.js)
+// ============================================
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  role          Role      @default(USER)
+  accounts      Account[]
+  sessions      Session[]
+  comments      Comment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+// ============================================
+// CONTENT MODELS
+// ============================================
+
+model Category {
+  id          String  @id @default(cuid())
+  name        String  @unique
+  slug        String  @unique
+  description String?
+  
+  blogs     Blog[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ============================================
+// PROJECTS
+// ============================================
+
+model Project {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  description String   @db.Text
+  content     String?  @db.Text
+  coverImage  String?
+  liveUrl     String?
+  githubUrl   String?
+  techStack   String[]
+  featured    Boolean  @default(false)
+  published   Boolean  @default(false)
+  sortOrder   Int      @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([published, featured])
+  @@index([slug])
+}
+
+// ============================================
+// BLOGS
+// ============================================
+
+model Blog {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  excerpt     String   @db.Text
+  content     String   @db.Text
+  coverImage  String?
+  published   Boolean  @default(false)
+  featured    Boolean  @default(false)
+  readingTime Int?
+  views       Int      @default(0)
+  tags        String[] @default([])
+
+  categoryId  String?
+  category    Category? @relation(fields: [categoryId], references: [id])
+  comments    Comment[]
+
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([published, featured])
+  @@index([slug])
+  @@index([publishedAt])
+  @@index([categoryId])
+}
+
+
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String   @db.Text
+  
+  blogId    String
+  blog      Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  parentId  String?
+  parent    Comment? @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   Comment[] @relation("CommentReplies")
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([blogId])
+  @@index([userId])
+  @@index([parentId])
+}
+
+// ============================================
+// LIBRARY - MOVIES
+// ============================================
+
+enum MediaStatus {
+  WATCHING
+  COMPLETED
+  TO_WATCH
+}
+
+model Movie {
+  id        String      @id @default(cuid())
+  title     String
+  slug      String      @unique
+  posterUrl String?
+  rating    Float?
+  review    String?     @db.Text
+  status    MediaStatus @default(TO_WATCH)
+  published Boolean     @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([published])
+  @@index([slug])
+}
+
+// ============================================
+// LIBRARY - BOOKS
+// ============================================
+
+enum BookStatus {
+  READING
+  COMPLETED
+  TO_READ
+}
+
+model Book {
+  id        String     @id @default(cuid())
+  title     String
+  slug      String     @unique
+  coverUrl  String?
+  rating    Float?
+  review    String?    @db.Text
+  status    BookStatus @default(TO_READ)
+  published Boolean    @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([published])
+  @@index([slug])
+}
+
+// ============================================
+// SNIPPETS 
+// ============================================
+
+model Snippet {
+  id        String   @id @default(cuid())
+  caption   String?  @db.Text
+  imageUrl  String?
+  published Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([published])
+  @@index([createdAt])
+}
 
