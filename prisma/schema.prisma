@@ -184,10 +184,9 @@ enum MediaStatus {
 model Movie {
   id        String      @id @default(cuid())
   title     String
-  slug      String      @unique
+  director  String?
   posterUrl String?
   rating    Float?
-  review    String?     @db.Text
   status    MediaStatus @default(TO_WATCH)
   published Boolean     @default(false)
 
@@ -196,7 +195,6 @@ model Movie {
 
   @@index([status])
   @@index([published])
-  @@index([slug])
 }
 
 // ============================================
@@ -212,10 +210,9 @@ enum BookStatus {
 model Book {
   id        String     @id @default(cuid())
   title     String
-  slug      String     @unique
+  author    String?
   coverUrl  String?
   rating    Float?
-  review    String?    @db.Text
   status    BookStatus @default(TO_READ)
   published Boolean    @default(false)
 
@@ -224,7 +221,6 @@ model Book {
 
   @@index([status])
   @@index([published])
-  @@index([slug])
 }
 
 // ============================================
