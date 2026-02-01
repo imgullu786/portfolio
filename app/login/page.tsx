@@ -23,7 +23,6 @@ function LoginContent() {
             onClick={() => signIn("github", { callbackUrl })}
             className="w-full"
             size="lg"
-            variant="outline"
           >
             <Github className="mr-2 h-5 w-5" />
             Continue with GitHub
@@ -32,7 +31,6 @@ function LoginContent() {
             onClick={() => signIn("google", { callbackUrl })}
             className="w-full"
             size="lg"
-            variant="outline"
           >
             <Image src="/logo/google.svg" alt="Google" width={16} height={16} />
             Continue with Google
