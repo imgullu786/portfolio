@@ -76,22 +76,6 @@ enum Role {
 }
 
 // ============================================
-// CONTENT MODELS
-// ============================================
-
-model Category {
-  id          String  @id @default(cuid())
-  name        String  @unique
-  slug        String  @unique
-  description String?
-
-  blogs     Blog[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-// ============================================
 // PROJECTS
 // ============================================
 
