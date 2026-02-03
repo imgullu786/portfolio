@@ -92,6 +92,7 @@ model Project {
   featured    Boolean  @default(false)
   published   Boolean  @default(false)
   sortOrder   Int      @default(0)
+  readingTime Int?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -224,3 +225,24 @@ model Snippet {
   @@index([createdAt])
 }
 
+// ============================================
+// NOTES
+// ============================================
+
+model Note {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  content     String   @db.Text
+  published   Boolean  @default(false)
+  readingTime Int?
+  tags        String[] @default([])
+
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([published])
+  @@index([slug])
+  @@index([publishedAt])
+}
