@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { blogSchema, BlogFormData } from "@/lib/validations";
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
-import { createSlug } from "@/lib/utils";
+import { calculateReadingTime, createSlug } from "@/lib/utils";
 
 
 async function requireAdmin() {
@@ -13,13 +13,6 @@ async function requireAdmin() {
         throw new Error("Unauthorized");
     }
     return session.user;
-}
-
-// Calculate reading time
-function calculateReadingTime(content: string) : number {
-    const wordsPerMinute = 200;
-    const words = content.split(/\s+/).length;
-    return Math.ceil(words / wordsPerMinute);
 }
 
 // Get all unique tags with count

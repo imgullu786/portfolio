@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
-import { createSlug } from "@/lib/utils";
+import { calculateReadingTime, createSlug } from "@/lib/utils";
 import { projectSchema, ProjectFormData } from "@/lib/validations";
 import { auth } from "@/lib/auth";
 
@@ -12,14 +12,6 @@ async function requireAdmin() {
         throw new Error("Unauthorized");
     }
     return session.user;
-}
-
-// Calculate reading time (average 200 words per minute)
-function calculateReadingTime(content: string | undefined | null): number | null {
-    if (!content) return null;
-    const wordsPerMinute = 200;
-    const words = content.trim().split(/\s+/).length;
-    return Math.ceil(words / wordsPerMinute);
 }
 
 // PROJECT ACTIONS

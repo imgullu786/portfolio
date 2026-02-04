@@ -5,7 +5,7 @@ export const projectSchema = z.object({
   title: z.string().min(1, "Title is required").max(200),
   slug: z.string().optional(),
   description: z.string().min(1, "Description is required"),
-  content: z.string().optional(),
+  content: z.string().min(1, "Content is required"),
   coverImage: z.string().url().optional().or(z.literal("")),
   liveUrl: z.string().url().optional().or(z.literal("")),
   githubUrl: z.string().url().optional().or(z.literal("")),
