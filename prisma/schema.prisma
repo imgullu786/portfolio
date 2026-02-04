@@ -118,8 +118,6 @@ model Blog {
   views       Int      @default(0)
   tags        String[] @default([])
 
-  categoryId  String?
-  category    Category? @relation(fields: [categoryId], references: [id])
   comments    Comment[]
 
   publishedAt DateTime?
@@ -129,7 +127,6 @@ model Blog {
   @@index([published, featured])
   @@index([slug])
   @@index([publishedAt])
-  @@index([categoryId])
 }
 
 

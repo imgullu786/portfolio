@@ -13,6 +13,7 @@ export const projectSchema = z.object({
   featured: z.boolean().default(false),
   published: z.boolean().default(false),
   sortOrder: z.number().int().default(0),
+  readingTime: z.number().int().default(0),
 });
 
 export type ProjectFormData = z.infer<typeof projectSchema>;
