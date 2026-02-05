@@ -47,3 +47,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     error: "/login",
   },
 });
+
+export const requireAdmin = async function () {
+    const session = await auth();
+    if (!session?.user || (session.user as any).role !== "ADMIN") {
+        throw new Error("Unauthorized");
+    }
+    return session.user;
+}
