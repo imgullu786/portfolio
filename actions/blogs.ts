@@ -37,7 +37,7 @@ async function getUniqueTags() {
 // Blog Actions
 export async function createBlog(data: BlogFormData) {
     await requireAdmin();
-    
+
     const validated = blogSchema.parse(data);
     const slug = validated.slug || createSlug(validated.title);
     const readingTime = calculateReadingTime(validated.content);
@@ -56,7 +56,7 @@ export async function createBlog(data: BlogFormData) {
             tags: validated.tags,
         }
     })
-    
+
     revalidatePath("/admin/blogs");
     revalidatePath("/blog");
     return { success: true, data: blog };
@@ -64,11 +64,11 @@ export async function createBlog(data: BlogFormData) {
 
 export async function updateBlog(id: string, data: BlogFormData) {
     await requireAdmin();
-    
+
     const validated = blogSchema.parse(data);
     const slug = validated.slug || createSlug(validated.title);
     const readingTime = calculateReadingTime(validated.content);
-    
+
     // Get current blog to check published status
     const currentBlog = await db.blog.findUnique({ where: { id } });
 

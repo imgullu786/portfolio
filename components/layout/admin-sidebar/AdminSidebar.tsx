@@ -31,7 +31,7 @@ export function AdminSidebar({ user, children }: any) {
         {/* Desktop sidebar */}
         <aside
           className={cn(
-            "hidden md:flex flex-col relative bg-linear-to-b from-[#02AED2] to-[#2FBEDF] transition-all border-white",
+            "hidden md:flex fixed inset-y-0 left-0 flex-col bg-linear-to-b from-[#02AED2] to-[#2FBEDF] transition-all",
             isCollapsed ? "w-16" : "w-64",
           )}
         >
@@ -50,7 +50,12 @@ export function AdminSidebar({ user, children }: any) {
         </aside>
 
         {/* Main */}
-        <main className="flex-1">
+        <main
+          className={cn(
+            "flex-1 transition-all",
+            isCollapsed ? "md:ml-16" : "md:ml-64",
+          )}
+        >
           <div className="md:hidden p-2 border-b">
             <Button size="icon" variant="ghost" onClick={() => setIsOpen(true)}>
               <Menu />
