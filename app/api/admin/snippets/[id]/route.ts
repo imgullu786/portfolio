@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { deleteSnippet, getSnippetById } from "@/lib/actions/snippets";
+import { deleteSnippet, getSnippetById } from "@/actions/snippets";
 
 export async function GET(
     request: Request,
