@@ -31,7 +31,7 @@ export const blogSchema = z.object({
   tags: z.array(z.string()).default([]),
 });
 
-export type BlogFormData = z.infer<typeof blogSchema>;
+export type BlogFormData = z.input<typeof blogSchema>;
 
 // Movie Schema
 export const movieSchema = z.object({
