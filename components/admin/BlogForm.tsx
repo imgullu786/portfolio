@@ -9,6 +9,7 @@ import { createBlog, updateBlog } from "@/actions/blogs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
+import { MarkdownEditor } from "@/components/admin/MarkdownEditor";
 import { toast } from "sonner";
 import { Loader2, ArrowLeft } from "lucide-react";
 import Link from "next/link";
@@ -199,7 +200,16 @@ export function BlogForm({ blog }: BlogFormProps) {
 
           {/* Content Editor */}
           <div className="flex-1">
-            <span>Content Editor</span>
+            <MarkdownEditor
+              value={watch("content") || ""}
+              onChange={(value) => setValue("content", value)}
+              placeholder="Start writing..."
+            />
+            {errors.content && (
+              <p className="text-sm text-destructive mt-1">
+                {errors.content.message}
+              </p>
+            )}
           </div>
         </div>
 
