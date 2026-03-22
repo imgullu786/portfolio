@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { MarkdownEditor } from "@/components/admin/MarkdownEditor";
+import { ImageUploader } from "@/components/admin/ImageUploader";
 import { toast } from "sonner";
 import { Loader2, ArrowLeft } from "lucide-react";
 import Link from "next/link";
@@ -215,7 +216,7 @@ export function BlogForm({ blog }: BlogFormProps) {
 
         {/* Sidebar - Image Uploader */}
         <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border p-4">
-          <span>Image Uploader</span>
+          <ImageUploader contentType="blogs" modelId={blog?.id} />
         </div>
       </div>
     </form>
