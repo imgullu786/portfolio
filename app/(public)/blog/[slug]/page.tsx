@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getBlogBySlug, incrementBlogViews } from "@/actions/blogs";
 import { MarkdownRenderer } from "@/components/module/makrdown/MarkdownRenderer";
+import { TableOfContents } from "@/components/module/makrdown/TableOfContent";
 import { Eye, Clock } from "lucide-react";
 import Link from "next/link";
 
@@ -127,7 +128,11 @@ export default async function BlogPostPage({
         </div>
 
         {/* Right Aside — TOC + Sponsor */}
-        <div>Table of Content</div>
+        <aside className="hidden xl:block w-56 shrink-0">
+          <div className="sticky top-24 space-y-6">
+            <TableOfContents content={blog.content} />
+          </div>
+        </aside>
       </div>
     </article>
   );
