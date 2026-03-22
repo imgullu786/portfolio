@@ -1,0 +1,71 @@
+/* Highlight.js theme overrides — syncs with light/dark mode */
+
+/* Light mode */
+:root:not(.dark) .hljs {
+    background: #f6f8fa;
+    color: #24292e;
+}
+
+:root:not(.dark) .hljs-comment,
+:root:not(.dark) .hljs-quote {
+    color: #6a737d;
+}
+
+:root:not(.dark) .hljs-keyword,
+:root:not(.dark) .hljs-selector-tag {
+    color: #d73a49;
+}
+
+:root:not(.dark) .hljs-string,
+:root:not(.dark) .hljs-addition {
+    color: #22863a;
+}
+
+:root:not(.dark) .hljs-number,
+:root:not(.dark) .hljs-literal {
+    color: #005cc5;
+}
+
+:root:not(.dark) .hljs-title,
+:root:not(.dark) .hljs-section,
+:root:not(.dark) .hljs-function {
+    color: #6f42c1;
+}
+
+:root:not(.dark) .hljs-built_in,
+:root:not(.dark) .hljs-type {
+    color: #e36209;
+}
+
+:root:not(.dark) .hljs-attr,
+:root:not(.dark) .hljs-name,
+:root:not(.dark) .hljs-tag {
+    color: #22863a;
+}
+
+:root:not(.dark) .hljs-variable,
+:root:not(.dark) .hljs-template-variable {
+    color: #005cc5;
+}
+
+:root:not(.dark) .hljs-meta {
+    color: #6a737d;
+}
+
+:root:not(.dark) .hljs-deletion {
+    color: #b31d28;
+    background-color: #ffeef0;
+}
+
+:root:not(.dark) .hljs-addition {
+    background-color: #f0fff4;
+}
+
+/* Code card background — syncs with theme */
+:root:not(.dark) .code-card {
+    background-color: #f6f8fa;
+}
+
+.dark .code-card {
+    background-color: hsl(0 0% 9%);
+}

@@ -15,13 +15,13 @@ async function requireAdmin() {
     return session.user;
 }
 
-// Get all unique tags with count
-async function getUniqueTags() {
+// Get all unique tags with counts
+export async function getAllTags() {
     const blogs = await db.blog.findMany({
         where: { published: true },
         select: { tags: true },
     });
-
+;
     const tagCounts: Record<string, number> = {};
     blogs.forEach((blog) => {
         blog.tags.forEach((tag) => {
@@ -30,7 +30,7 @@ async function getUniqueTags() {
     });
 
     return Object.entries(tagCounts)
-        .map(([tag, count]) => ({ tag, count }))
+        .map(([name, count]) => ({ name, count }))
         .sort((a, b) => b.count - a.count);
 }
 
@@ -128,19 +128,38 @@ export async function getPaginatedBlogs(options: {
     tag?: string;
     limit?: number;
     cursor?: string;
+    sort?: "latest" | "oldest";
 }) {
     const limit = options.limit || 10;
+    const sort = options.sort || "latest";
 
-    const blogs = await db.blog.findMany({
-        where: {
-            published: options.published,
-            tags: options.tag ? { has: options.tag } : undefined,
-        },
-        orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
-        take: limit + 1, // Fetch one extra to check if there's more
-        cursor: options.cursor ? { id: options.cursor } : undefined,
-        skip: options.cursor ? 1 : 0, // Skip the cursor itself
-    });
+    let orderBy: any[];
+    switch (sort) {
+        case "oldest":
+            orderBy = [{ publishedAt: "asc" }, { createdAt: "asc" }];
+            break;
+        default:
+            orderBy = [{ publishedAt: "desc" }, { createdAt: "desc" }];
+    }
+
+    const where = {
+        published: options.published,
+        tags: options.tag ? { has: options.tag } : undefined,
+    };
+
+    const [blogs, totalCount] = await Promise.all([
+        db.blog.findMany({
+            where: {
+                published: options.published,
+                tags: options.tag ? { has: options.tag } : undefined,
+            },
+            orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
+            take: limit + 1, // Fetch one extra to check if there's more
+            cursor: options.cursor ? { id: options.cursor } : undefined,
+            skip: options.cursor ? 1 : 0, // Skip the cursor itself
+        }),
+        db.blog.count(),
+    ]);
 
     const hasMore = blogs.length > limit;
     const items = hasMore ? blogs.slice(0, limit) : blogs;
@@ -150,6 +169,7 @@ export async function getPaginatedBlogs(options: {
         items,
         nextCursor,
         hasMore,
+        totalCount,
     };
 }
 
