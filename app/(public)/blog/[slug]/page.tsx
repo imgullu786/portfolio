@@ -124,7 +124,7 @@ export default async function BlogPostPage({
           <MarkdownRenderer content={blog.content} />
 
           {/* Comments Section */}
-          <div>Comment Section</div>
+          <div className="mt-12">Comment Section - Yet to Implement</div>
         </div>
 
         {/* Right Aside — TOC + Sponsor */}
