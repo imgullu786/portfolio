@@ -4,7 +4,14 @@ import { BlogContent } from "@/components/module/blog/BlogContent";
 
 export const metadata = {
   title: "Blog",
-  description: "Thoughts, tutorials, and insights",
+  description:
+    "Thoughts, tutorials, and insights on web development, software engineering, and technology.",
+  openGraph: {
+    title: "Blog",
+    description:
+      "Thoughts, tutorials, and insights on web development, software engineering, and technology.",
+    type: "website" as const,
+  },
 };
 
 interface BlogPageProps {

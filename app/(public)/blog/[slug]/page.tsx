@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { getBlogBySlug, incrementBlogViews } from "@/actions/blogs";
 import { MarkdownRenderer } from "@/components/module/makrdown/MarkdownRenderer";
-import { TableOfContents } from "@/components/module/makrdown/TableOfContent";
+import { SideRailLines } from "@/components/module/makrdown/SideRailLines";
 import { Eye, Clock } from "lucide-react";
 import Link from "next/link";
 
@@ -17,25 +17,33 @@ export async function generateMetadata({
     return { title: "Not Found" };
   }
 
+  const description = blog.excerpt || `Read "${blog.title}" on the blog.`;
+
   return {
     title: blog.title,
-    description: blog.excerpt,
+    description,
+    keywords: blog.tags.length > 0 ? blog.tags : undefined,
     openGraph: {
       title: blog.title,
-      description: blog.excerpt,
-      type: "article",
+      description,
+      type: "article" as const,
       publishedTime: blog.publishedAt?.toISOString(),
+      modifiedTime: blog.updatedAt?.toISOString(),
+      section: blog.tags[0] ?? undefined,
+      tags: blog.tags.length > 0 ? blog.tags : undefined,
     },
   };
 }
 
-function formatFullDate(date: Date): string {
-  return date.toLocaleDateString("en-US", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+function formatMonospaceDate(date: Date): string {
+  return date
+    .toLocaleDateString("en-US", {
+      month: "short",
+      day: "2-digit",
+      year: "numeric",
+    })
+    .toUpperCase()
+    .replace(",", "");
 }
 
 export default async function BlogPostPage({
@@ -58,82 +66,83 @@ export default async function BlogPostPage({
     blog.updatedAt.getTime() - blog.publishedAt.getTime() > 60000;
 
   return (
-    <article className="container mx-auto px-4 py-8">
-      <div className="flex justify-center gap-10">
-        {/* Main Content */}
-        <div className="w-full max-w-[850px] min-w-0 pt-12 sm:pt-16">
-          {/* Title — large, centered */}
-          <header className="mb-10 text-center">
-            <h1 className="text-3xl sm:text-4xl font-bold leading-tight mb-4">
-              {blog.title}
-            </h1>
+    <>
+      {/* Side-rail lines — right edge section indicators */}
+      <SideRailLines content={blog.content} />
 
-            {/* Meta bar — single line like innei.in */}
-            <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground flex-wrap">
+      <article className="container max-w-[700px] mx-auto px-4 py-8">
+        <div className="flex justify-center">
+          {/* Centered content — no sidebar */}
+          <div className="w-full min-w-0 pt-12 sm:pt-16">
+            {/* Title — large serif, left-aligned (Maxime Heckel style) */}
+            <header className="mb-10">
+              <h1 className="text-3xl sm:text-4xl font-bold leading-tight mb-4">
+                {blog.title}
+              </h1>
+
+              {/* Date — monospace, uppercase, muted */}
               {blog.publishedAt && (
-                <time dateTime={blog.publishedAt.toISOString()}>
-                  {formatFullDate(blog.publishedAt)}
+                <time
+                  dateTime={blog.publishedAt.toISOString()}
+                  className="block font-mono text-sm tracking-wider text-muted-foreground/60 mb-3"
+                >
+                  {formatMonospaceDate(blog.publishedAt)}
+                  {isEdited && (
+                    <span className="text-muted-foreground/40 ml-2">
+                      (edited)
+                    </span>
+                  )}
                 </time>
               )}
 
-              {isEdited && (
-                <span className="text-muted-foreground/50">(edited)</span>
-              )}
+              {/* Meta bar */}
+              <div className="flex items-center gap-2 text-sm text-muted-foreground flex-wrap">
+                {blog.tags.length > 0 && (
+                  <>
+                    {blog.tags.map((tag, i) => (
+                      <span key={tag}>
+                        <Link
+                          href={`/blog?tag=${encodeURIComponent(tag)}`}
+                          className="hover:text-foreground transition-colors"
+                        >
+                          {tag}
+                        </Link>
+                        {i < blog.tags.length - 1 && (
+                          <span className="text-muted-foreground/30 mx-0.5">
+                            /
+                          </span>
+                        )}
+                      </span>
+                    ))}
+                    <span className="text-muted-foreground/30">·</span>
+                  </>
+                )}
 
-              {blog.tags.length > 0 && (
-                <>
-                  <span className="text-muted-foreground/30">·</span>
-                  {blog.tags.map((tag, i) => (
-                    <span key={tag}>
-                      <Link
-                        href={`/blog?tag=${encodeURIComponent(tag)}`}
-                        className="hover:text-foreground transition-colors"
-                      >
-                        {tag}
-                      </Link>
-                      {i < blog.tags.length - 1 && (
-                        <span className="text-muted-foreground/30 mx-0.5">
-                          /
-                        </span>
-                      )}
+                <span className="flex items-center gap-1">
+                  <Eye className="h-3.5 w-3.5" />
+                  {blog.views.toLocaleString()}
+                </span>
+
+                {blog.readingTime && (
+                  <>
+                    <span className="text-muted-foreground/30">·</span>
+                    <span className="flex items-center gap-1">
+                      <Clock className="h-3.5 w-3.5" />
+                      {blog.readingTime} min
                     </span>
-                  ))}
-                </>
-              )}
+                  </>
+                )}
+              </div>
+            </header>
 
-              <span className="text-muted-foreground/30">·</span>
+            {/* Article Content */}
+            <MarkdownRenderer content={blog.content} />
 
-              <span className="flex items-center gap-1">
-                <Eye className="h-3.5 w-3.5" />
-                {blog.views.toLocaleString()}
-              </span>
-
-              {blog.readingTime && (
-                <>
-                  <span className="text-muted-foreground/30">·</span>
-                  <span className="flex items-center gap-1">
-                    <Clock className="h-3.5 w-3.5" />
-                    {blog.readingTime} min
-                  </span>
-                </>
-              )}
-            </div>
-          </header>
-
-          {/* Article Content */}
-          <MarkdownRenderer content={blog.content} />
-
-          {/* Comments Section */}
-          <div className="mt-12">Comment Section - Yet to Implement</div>
-        </div>
-
-        {/* Right Aside — TOC + Sponsor */}
-        <aside className="hidden xl:block w-56 shrink-0">
-          <div className="sticky top-24 space-y-6">
-            <TableOfContents content={blog.content} />
+            {/* Comments Section */}
+            <div className="mt-12">Comment Section - Yet to Implement</div>
           </div>
-        </aside>
-      </div>
-    </article>
+        </div>
+      </article>
+    </>
   );
 }
