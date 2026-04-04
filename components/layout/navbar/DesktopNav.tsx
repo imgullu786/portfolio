@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { navItems } from "../config";
+import { navItems } from "./config";
 import { NavItem } from "./NavItem";
 import { ThemeToggle } from "./ThemeToggle";
-import { AuthButton } from "@/components/layout/navbar/internal/AuthButton";
+import { AuthButton } from "./AuthButton";
 
 export function DesktopNav() {
   const pathname = usePathname();
@@ -23,7 +23,7 @@ export function DesktopNav() {
         href="/"
         className="font-bold text-sm px-4 py-2 rounded-full bg-zinc-50/70 dark:bg-zinc-900/70 backdrop-blur-md ring-1 ring-zinc-900/5 dark:ring-white/10"
       >
-        Portfolio
+        Md Gulam Gaush
       </Link>
 
       {/* Navigation Capsule - Middle */}
