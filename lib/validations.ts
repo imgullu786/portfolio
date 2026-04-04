@@ -6,7 +6,6 @@ export const projectSchema = z.object({
   slug: z.string().optional(),
   description: z.string().min(1, "Description is required"),
   content: z.string().min(1, "Content is required"),
-  coverImage: z.string().url().optional().or(z.literal("")),
   liveUrl: z.string().url().optional().or(z.literal("")),
   githubUrl: z.string().url().optional().or(z.literal("")),
   techStack: z.array(z.string()).default([]),
@@ -16,7 +15,7 @@ export const projectSchema = z.object({
   readingTime: z.number().int().default(0),
 });
 
-export type ProjectFormData = z.infer<typeof projectSchema>;
+export type ProjectFormData = z.input<typeof projectSchema>;
 
 // Blog Schema
 export const blogSchema = z.object({
